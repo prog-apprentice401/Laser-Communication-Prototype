@@ -1,8 +1,9 @@
 #define LED_PIN		3
 #define INPUT_PIN	A0
 
-uint16_t recievedData = 0;
-uint16_t readBit;
+uint8_t recievedData = 0;
+uint8_t readBit;
+byte numOfBitsRecieved = 0;
 
 void setup ()
 {
@@ -14,23 +15,15 @@ void setup ()
 
 void loop ()
 {
-	while (analogRead (INPUT_PIN) < 500)
-		;
-
-	recievedData = 0;
-	for (int i = 0; i < 16; i++) {
-		delay (150);
-		readBit = (analogRead (INPUT_PIN) > 400) ? 1 : 0;
-		recievedData |= readBit << i;
-		Serial.print ("Bit Recieved: ");
-		Serial.print (readBit);
-		Serial.print ("#");
-		Serial.println (i);
-		while ((analogRead (INPUT_PIN) > 400 ? 1 : 0) == readBit
-				&& i < 15)
+	readBit = 0;
+	for (int i = 0; i < 8; i++) {
+		while ((analogRead (INPUT_PIN) > 500 ? 1 : 0) == readBit)
 			;
+		delay (50);
+		readBit	 = analogRead (INPUT_PIN) > 500 ? 1 : 0;
+		recievedData |= readBit << i;
+		Serial.println (i);
 	}
-	Serial.print ("Recieved data: ");
+	delay (100);
 	Serial.println (recievedData);
-	analogWrite (LED_PIN, recievedData);
 }
