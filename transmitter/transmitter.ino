@@ -34,7 +34,7 @@ void sendThroughLaser (const byte outputPin, uint16_t dataToSend)
 		currentOutputState = dataToSend & (1 << i); //access LSB of data
 		digitalWrite (outputPin, currentOutputState);	
 		delay (150);
-		Serial.println ("asdf");
+		Serial.println ("Bit Sent");
 	}
 	digitalWrite (outputPin, !currentOutputState);
 	digitalWrite (outputPin, LOW);

@@ -19,7 +19,7 @@ void loop ()
 
 	recievedData = 0;
 	for (int i = 0; i < 16; i++) {
-		delay (100);
+		delay (150);
 		readBit = (analogRead (INPUT_PIN) > 400) ? 1 : 0;
 		recievedData |= readBit << i;
 		Serial.print ("Bit Recieved: ");
@@ -32,4 +32,5 @@ void loop ()
 	}
 	Serial.print ("Recieved data: ");
 	Serial.println (recievedData);
+	analogWrite (LED_PIN, recievedData);
 }
