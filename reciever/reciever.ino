@@ -1,9 +1,10 @@
 #define LED_PIN		3
 #define INPUT_PIN	A0
+#define THRESHOLD	50
 
+int16_t ambientReading;
 uint8_t recievedData = 0;
 uint8_t readBit;
-byte numOfBitsRecieved = 0;
 
 void setup ()
 {
@@ -11,19 +12,25 @@ void setup ()
 	pinMode (LED_PIN, OUTPUT);
 	pinMode (INPUT_PIN, INPUT);
 	digitalWrite (LED_PIN, LOW);
+
+	//first reading of solar panel is incorrect
+	analogRead (INPUT_PIN);	
+	delay (50);
 }
 
 void loop ()
 {
-	readBit = 0;
+	ambientReading = analogRead (INPUT_PIN);
+	recievedData = 0;
 	for (int i = 0; i < 8; i++) {
-		while ((analogRead (INPUT_PIN) > 500 ? 1 : 0) == readBit)
+		while ((analogRead (INPUT_PIN) > ambientReading + THRESHOLD ? 1 : 0) == readBit)
 			;
-		delay (50);
-		readBit	 = analogRead (INPUT_PIN) > 500 ? 1 : 0;
+		delay (10);
+		readBit	 = analogRead (INPUT_PIN) > ambientReading + THRESHOLD ? 1 : 0;
 		recievedData |= readBit << i;
-		Serial.println (i);
+		Serial.println (readBit, BIN);
 	}
-	delay (100);
-	Serial.println (recievedData);
+	Serial.println (recievedData, BIN);
+	analogWrite (LED_PIN, recievedData);
+	delay (10);
 }
